@@ -11,10 +11,19 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
+
+import hotel.controller.ReservaController;
+import hotel.dao.MetodoPagoDAO;
+import hotel.modelo.MetodoPago;
+import hotel.modelo.Reserva;
+
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.text.Format;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -33,10 +42,11 @@ public class ReservasView extends JFrame {
 	public static JTextField txtValor;
 	public static JDateChooser txtFechaEntrada;
 	public static JDateChooser txtFechaSalida;
-	public static JComboBox<String> txtFormaPago;
+	public static JComboBox<MetodoPago> txtFormaPago;
 	int xMouse, yMouse;
 	private JLabel labelExit;
 	private JLabel labelAtras;
+	private ReservaController reservaController;
 
 	/**
 	 * Launch the application.
@@ -59,6 +69,8 @@ public class ReservasView extends JFrame {
 	 */
 	public ReservasView() {
 		super("Reserva");
+		this.reservaController = new ReservaController();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservasView.class.getResource("/imagenes/aH-40px.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 560);
@@ -282,14 +294,18 @@ public class ReservasView extends JFrame {
 		txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		panel.add(txtValor);
 		txtValor.setColumns(10);
-
+		txtValor.setText("10");
 
 		txtFormaPago = new JComboBox();
 		txtFormaPago.setBounds(68, 417, 289, 38);
 		txtFormaPago.setBackground(SystemColor.text);
 		txtFormaPago.setBorder(new LineBorder(new Color(255, 255, 255), 1, true));
 		txtFormaPago.setFont(new Font("Roboto", Font.PLAIN, 16));
-		txtFormaPago.setModel(new DefaultComboBoxModel(new String[] {"Tarjeta de Crédito", "Tarjeta de Débito", "Dinero en efectivo"}));
+		txtFormaPago.addItem(new MetodoPago(0, "Selecciona un metodo de Pago"));
+		
+		var metodosPago = new MetodoPagoDAO().listar();
+		metodosPago.forEach(metodoPago -> txtFormaPago.addItem(metodoPago));
+		
 		panel.add(txtFormaPago);
 
 		JPanel btnsiguiente = new JPanel();
@@ -297,8 +313,21 @@ public class ReservasView extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {		
+					
+					var reserva = new Reserva(
+							txtFechaEntrada.getDate(),
+							txtFechaSalida.getDate(),
+							Double.parseDouble(txtValor.getText()));
+
+					var metodoPago = (MetodoPago)txtFormaPago.getSelectedItem();
+					
+					var numeroReserva = reservaController.guardar(reserva, metodoPago.getId());
+					
 					RegistroHuesped registro = new RegistroHuesped();
 					registro.setVisible(true);
+					
+					
+					
 				} else {
 					JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
 				}

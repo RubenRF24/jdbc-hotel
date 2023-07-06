@@ -23,7 +23,7 @@ public class UsuarioDAO {
 		
 		try(con){
 			var querySelect = "SELECT ID,LOGIN,CLAVE "
-					+ " FROM USUARIOS "
+					+ " FROM TBL_USUARIOS "
 					+ " WHERE LOGIN = ? AND CLAVE = ?";
 			System.out.println(querySelect);
 			
