@@ -24,7 +24,12 @@ public class Reserva {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
+	public Date getFechaEntradaDate() {
+		return this.fechaEntrada;
+	}
+	
+	
 	public String getFechaEntrada() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		return String.valueOf(sdf.format(this.fechaEntrada));
@@ -32,6 +37,10 @@ public class Reserva {
 
 	public void setFechaEntrada(Date fechaEntrada) {
 		this.fechaEntrada = fechaEntrada;
+	}
+	
+	public Date getFechaSalidaDate() {
+		return this.fechaSalida;
 	}
 
 	public String getFechaSalida() {

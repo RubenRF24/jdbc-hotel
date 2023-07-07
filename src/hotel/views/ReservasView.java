@@ -1,38 +1,38 @@
 package hotel.views;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.SystemColor;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.ImageIcon;
 import java.awt.Color;
-import javax.swing.JTextField;
-import com.toedter.calendar.JDateChooser;
-
-import hotel.controller.ReservaController;
-import hotel.dao.MetodoPagoDAO;
-import hotel.modelo.MetodoPago;
-import hotel.modelo.Reserva;
-
+import java.awt.EventQueue;
 import java.awt.Font;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import java.text.Format;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.Toolkit;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import com.toedter.calendar.JDateChooser;
+
+import hotel.controller.MetodoPagoController;
+import hotel.controller.ReservaController;
+import hotel.modelo.MetodoPago;
+import hotel.modelo.Reserva;
 
 
 @SuppressWarnings("serial")
@@ -47,6 +47,8 @@ public class ReservasView extends JFrame {
 	private JLabel labelExit;
 	private JLabel labelAtras;
 	private ReservaController reservaController;
+	private MetodoPagoController metodoPagoController;
+	final public static Double valorDia = 20.0;
 
 	/**
 	 * Launch the application.
@@ -70,6 +72,7 @@ public class ReservasView extends JFrame {
 	public ReservasView() {
 		super("Reserva");
 		this.reservaController = new ReservaController();
+		this.metodoPagoController = new MetodoPagoController();
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservasView.class.getResource("/imagenes/aH-40px.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -294,7 +297,6 @@ public class ReservasView extends JFrame {
 		txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		panel.add(txtValor);
 		txtValor.setColumns(10);
-		txtValor.setText("10");
 
 		txtFormaPago = new JComboBox();
 		txtFormaPago.setBounds(68, 417, 289, 38);
@@ -303,7 +305,7 @@ public class ReservasView extends JFrame {
 		txtFormaPago.setFont(new Font("Roboto", Font.PLAIN, 16));
 		txtFormaPago.addItem(new MetodoPago(0, "Selecciona un metodo de Pago"));
 		
-		var metodosPago = new MetodoPagoDAO().listar();
+		var metodosPago = metodoPagoController.listar();
 		metodosPago.forEach(metodoPago -> txtFormaPago.addItem(metodoPago));
 		
 		panel.add(txtFormaPago);
@@ -312,7 +314,7 @@ public class ReservasView extends JFrame {
 		btnsiguiente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {		
+				if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {					
 					
 					var reserva = new Reserva(
 							txtFechaEntrada.getDate(),
@@ -323,6 +325,8 @@ public class ReservasView extends JFrame {
 					
 					var numeroReserva = reservaController.guardar(reserva, metodoPago.getId());
 					
+					JOptionPane.showMessageDialog(null, "Numero de reserva: "+numeroReserva);
+					
 					RegistroHuesped registro = new RegistroHuesped();
 					registro.setVisible(true);
 					
@@ -331,19 +335,42 @@ public class ReservasView extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
 				}
-			}						
+			}
+					
 		});
 		btnsiguiente.setLayout(null);
-		btnsiguiente.setBackground(SystemColor.textHighlight);
+		btnsiguiente.setBackground(new Color(0, 120, 215));
 		btnsiguiente.setBounds(238, 493, 122, 35);
 		panel.add(btnsiguiente);
 		btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+		
+		JButton btnNewButton = new JButton("Calcular precio");
+		btnNewButton.setBorderPainted(false);
+		btnNewButton.setBackground(new Color(0, 120, 215));
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				obtenerValor();
+			}
+		});
+		btnNewButton.setBounds(72, 493, 122, 35);
+		panel.add(btnNewButton);
 
 
 	}
 		
 	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"	
-	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
+	
+		private static void obtenerValor() {
+			if(ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {
+			Integer diff =  (int) (txtFechaSalida.getDate().getTime() - txtFechaEntrada.getDate().getTime());
+			TimeUnit time = TimeUnit.DAYS; 
+			Integer difference = (int) time.convert(diff, TimeUnit.MILLISECONDS);
+			Double valor = ReservasView.valorDia * difference;
+			txtValor.setText(valor.toString());
+			}
+		}	
+	
+		private void headerMousePressed(java.awt.event.MouseEvent evt) {
 	        xMouse = evt.getX();
 	        yMouse = evt.getY();
 	    }
