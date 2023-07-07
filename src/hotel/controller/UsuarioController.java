@@ -1,7 +1,6 @@
 package hotel.controller;
 
 import hotel.dao.UsuarioDAO;
-import hotel.factory.ConnectionFactory;
 
 public class UsuarioController {
 

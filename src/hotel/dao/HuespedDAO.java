@@ -1,13 +1,16 @@
-package hotel.controller;
+package hotel.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import hotel.factory.ConnectionFactory;
 import hotel.modelo.Huesped;
+import hotel.modelo.Reserva;
 
 public class HuespedDAO {
 
@@ -46,6 +49,42 @@ public class HuespedDAO {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	public List<Huesped> listarHuespedes() {
+		List<Huesped> resultado = new ArrayList<>();
+				
+				try(con){
+					
+					var querySelect = "SELECT ID, NOMBRE, APELLIDO, FECHA_NAC, NACIONALIDAD, TELEFONO, ID_RESERVA"
+							+ " FROM TBL_HUESPEDES";
+					
+					PreparedStatement statement = con.prepareStatement(
+							querySelect);
+					
+					try(statement){
+						final ResultSet resultSet = statement.executeQuery();
+						
+						try(resultSet){
+							while(resultSet.next()) {
+								var huesped = new Huesped(resultSet.getInt("ID"),
+										resultSet.getString("NOMBRE"),
+										resultSet.getString("APELLIDO"),
+										resultSet.getDate("FECHA_NAC"),
+										resultSet.getString("NACIONALIDAD"),
+										resultSet.getInt("TELEFONO"),
+										resultSet.getInt("ID_RESERVA"));
+								
+								resultado.add(huesped);
+							}
+						}
+					}
+					
+				}catch(SQLException e) {
+					throw new RuntimeException(e);
+				}
+				
+				return resultado;
 	}
 	
 	

@@ -5,11 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-
-import javax.swing.JTextField;
-
-import com.toedter.calendar.JDateChooser;
+import java.util.ArrayList;
+import java.util.List;
 
 import hotel.factory.ConnectionFactory;
 import hotel.modelo.Reserva;
@@ -50,6 +47,40 @@ public class ReservaDAO {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	public List<Reserva> listarReservas() {
+		List<Reserva> resultado = new ArrayList<>();
+		
+		try(con){
+			
+			var querySelect = "SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMAPAGO_ID "
+					+ "FROM TBL_RESERVA";
+			
+			PreparedStatement statement = con.prepareStatement(
+					querySelect);
+			
+			try(statement){
+				final ResultSet resultSet = statement.executeQuery();
+				
+				try(resultSet){
+					while(resultSet.next()) {
+						var reserva = new Reserva(resultSet.getInt("ID"),
+								resultSet.getDate("FECHA_ENTRADA"),
+								resultSet.getDate("FECHA_SALIDA"),
+								resultSet.getDouble("VALOR"),
+								resultSet.getInt("FORMAPAGO_ID"));
+						
+						resultado.add(reserva);
+					}
+				}
+			}
+			
+		}catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return resultado;
 	}
 	
 	

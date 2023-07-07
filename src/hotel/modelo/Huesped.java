@@ -13,11 +13,21 @@ public class Huesped {
 	private int telefono;
 	private int reservaId;
 
-	public Huesped(String nombre, String apellido, Date fechaNacimiento, int telefono,
-			int reservaId) {
+	public Huesped(String nombre, String apellido, Date fechaNacimiento, int telefono, int reservaId) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fechaNacimiento = fechaNacimiento;
+		this.telefono = telefono;
+		this.reservaId = reservaId;
+	}
+
+	public Huesped(int id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad, int telefono,
+			int reservaId) {
+		this.id = id;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.fechaNacimiento = fechaNacimiento;
+		this.nacionalidad = nacionalidad;
 		this.telefono = telefono;
 		this.reservaId = reservaId;
 	}

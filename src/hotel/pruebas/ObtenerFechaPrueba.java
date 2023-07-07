@@ -1,10 +1,7 @@
 package hotel.pruebas;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import hotel.modelo.Reserva;

@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import hotel.factory.ConnectionFactory;
-import hotel.modelo.Usuario;
 
 public class UsuarioDAO {
 
@@ -25,7 +22,6 @@ public class UsuarioDAO {
 			var querySelect = "SELECT ID,LOGIN,CLAVE "
 					+ " FROM TBL_USUARIOS "
 					+ " WHERE LOGIN = ? AND CLAVE = ?";
-			System.out.println(querySelect);
 			
 			final PreparedStatement statement = con.
 					prepareStatement(querySelect);

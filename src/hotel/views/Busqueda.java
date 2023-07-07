@@ -1,30 +1,29 @@
 package hotel.views;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.SystemColor;
-import javax.swing.JLabel;
+import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.awt.event.ActionEvent;
-import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
-import javax.swing.SwingConstants;
-import javax.swing.JSeparator;
-import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import hotel.controller.HuespedController;
+import hotel.controller.ReservaController;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -101,6 +100,7 @@ public class Busqueda extends JFrame {
 		modelo.addColumn("Fecha Check Out");
 		modelo.addColumn("Valor");
 		modelo.addColumn("Forma de Pago");
+		cargarReservas();
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table, null);
 		scroll_table.setVisible(true);
@@ -117,6 +117,7 @@ public class Busqueda extends JFrame {
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
 		modeloHuesped.addColumn("Número de Reserva");
+		cargarHuespedes();
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
 		scroll_tableHuespedes.setVisible(true);
@@ -262,7 +263,33 @@ public class Busqueda extends JFrame {
 		setResizable(false);
 	}
 	
-//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
+	private void cargarHuespedes() {
+		var huespedes = new HuespedController().cargarHuespedes();
+		
+		huespedes.forEach(huesped -> modeloHuesped.addRow(new Object[] {
+				huesped.getId(),
+				huesped.getNombre(),
+				huesped.getApellido(),
+				huesped.getFechaNacimiento(),
+				huesped.getNacionalidad(),
+				huesped.getTelefono(),
+				huesped.getReservaId()
+		}));
+	}
+	
+	private void cargarReservas() {
+			var reservas = new ReservaController().cargarReservas();
+			
+			reservas.forEach(reserva -> modelo.addRow(new Object[] {
+					reserva.getId(),
+					reserva.getFechaEntrada(),
+					reserva.getFechaSalida(),
+					reserva.getValor(),
+					reserva.getFormaPagoId()
+			}));
+		}
+
+	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"
 	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
 	        xMouse = evt.getX();
 	        yMouse = evt.getY();
