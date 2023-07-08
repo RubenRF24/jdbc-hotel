@@ -1,5 +1,6 @@
 package hotel.dao;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import hotel.factory.ConnectionFactory;
 import hotel.modelo.Huesped;
@@ -34,7 +37,7 @@ public class HuespedDAO {
 				statement.setString(2, huesped.getApellido());
 				statement.setString(3, huesped.getFechaNacimiento());
 				statement.setString(4, huesped.getNacionalidad());
-				statement.setInt(5, huesped.getTelefono());
+				statement.setLong(5, huesped.getTelefono().longValue());
 				statement.setInt(6, huesped.getReservaId());
 
 				statement.execute();
@@ -70,7 +73,7 @@ public class HuespedDAO {
 					while (resultSet.next()) {
 						var huesped = new Huesped(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
 								resultSet.getString("APELLIDO"), resultSet.getDate("FECHA_NAC"),
-								resultSet.getString("NACIONALIDAD"), resultSet.getInt("TELEFONO"),
+								resultSet.getString("NACIONALIDAD"), BigInteger.valueOf(resultSet.getLong("TELEFONO")),
 								resultSet.getInt("ID_RESERVA"));
 
 						resultado.add(huesped);
@@ -86,7 +89,7 @@ public class HuespedDAO {
 	}
 
 	public int modificar(Integer id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad,
-			Double telefono, Integer numeroReserva) {
+			BigInteger telefono, Integer numeroReserva) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -101,7 +104,7 @@ public class HuespedDAO {
 				statement.setString(2, apellido);
 				statement.setString(3, sdf.format(fechaNacimiento));
 				statement.setString(4, nacionalidad);
-				statement.setDouble(5, telefono);
+				statement.setLong(5, telefono.longValue());
 				statement.setInt(6, numeroReserva);
 				statement.setInt(7, id);
 
@@ -113,6 +116,7 @@ public class HuespedDAO {
 			}
 
 		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Ha ocurrido un error");
 			throw new RuntimeException(e);
 		}
 

@@ -1,5 +1,6 @@
 package hotel.controller;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class HuespedController {
 	}
 
 	public int modificar(Integer id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad,
-			Double telefono, Integer numeroReserva) {
+			BigInteger telefono, Integer numeroReserva) {
 		return new HuespedDAO().modificar(id, nombre, apellido, fechaNacimiento,
 								nacionalidad, telefono, numeroReserva);
 	}

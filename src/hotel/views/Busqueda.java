@@ -352,8 +352,8 @@ public class Busqueda extends JFrame {
 						Date fechaNacimiento = formato
 								.parse(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString());
 						String nacionalidad = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4).toString();
-						Double telefono = Double
-								.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5).toString());
+						BigInteger telefono = new BigInteger(
+								modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5).toString());
 						Integer numeroReserva = Integer
 								.valueOf(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 6).toString());
 						;

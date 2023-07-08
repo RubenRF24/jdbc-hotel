@@ -1,5 +1,6 @@
 package hotel.modelo;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -10,10 +11,10 @@ public class Huesped {
 	private String apellido;
 	private Date fechaNacimiento;
 	private String nacionalidad;
-	private int telefono;
+	private BigInteger telefono;
 	private int reservaId;
 
-	public Huesped(String nombre, String apellido, Date fechaNacimiento, int telefono, int reservaId) {
+	public Huesped(String nombre, String apellido, Date fechaNacimiento, BigInteger telefono, int reservaId) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fechaNacimiento = fechaNacimiento;
@@ -21,7 +22,7 @@ public class Huesped {
 		this.reservaId = reservaId;
 	}
 
-	public Huesped(int id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad, int telefono,
+	public Huesped(int id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad, BigInteger telefono,
 			int reservaId) {
 		this.id = id;
 		this.nombre = nombre;
@@ -73,11 +74,11 @@ public class Huesped {
 		this.nacionalidad = nacionalidad;
 	}
 
-	public int getTelefono() {
+	public BigInteger getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(BigInteger telefono) {
 		this.telefono = telefono;
 	}
 

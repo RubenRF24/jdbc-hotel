@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import hotel.factory.ConnectionFactory;
 import hotel.modelo.Reserva;
 
@@ -105,6 +107,7 @@ public class ReservaDAO {
 			}
 
 		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "Ha ocurrido un error");
 			throw new RuntimeException(e);
 		}
 	}
