@@ -24,4 +24,8 @@ public class HuespedController {
 								nacionalidad, telefono, numeroReserva);
 	}
 
+	public int eliminar(Integer id) {
+		return new HuespedDAO().eliminar(id);
+	}
+
 }

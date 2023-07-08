@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.math.BigInteger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -273,7 +274,7 @@ public class RegistroHuesped extends JFrame {
 						txtNombre.getText(),
 						txtApellido.getText(),
 						txtFechaN.getDate(),
-						Integer.parseInt(txtTelefono.getText()),
+						new BigInteger(txtTelefono.getText()),
 						Integer.parseInt(txtNreserva.getText()));
 				
 				var nacionalidad = (Nacionalidad)txtNacionalidad.getSelectedItem();

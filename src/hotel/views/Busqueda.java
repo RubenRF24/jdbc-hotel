@@ -270,6 +270,16 @@ public class Busqueda extends JFrame {
 		btnEditar.add(lblEditar);
 
 		JPanel btnEliminar = new JPanel();
+		btnEliminar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tbHuespedes.isShowing()) {
+					eliminar(tbHuespedes, modeloHuesped, huespedController);
+				} else if (tbReservas.isShowing()) {
+					eliminar(tbReservas, modelo, reservaController);
+				}
+			}
+		});
 		btnEliminar.setLayout(null);
 		btnEliminar.setBackground(new Color(12, 138, 199));
 		btnEliminar.setBounds(767, 508, 122, 35);
@@ -372,6 +382,30 @@ public class Busqueda extends JFrame {
 				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 	}
 
+	private void eliminar(JTable tabla, DefaultTableModel modelo, Object controller) {
+		if (tieneFilaElegida(tabla)) {
+			JOptionPane.showMessageDialog(this, "Por favor, elije un item");
+			return;
+		}
+
+		Optional.ofNullable(modelo.getValueAt(tabla.getSelectedRow(), tabla.getSelectedColumn()))
+				.ifPresentOrElse(fila -> {
+
+					Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
+
+					int cantidadEliminada = 0;
+					
+					if(controller instanceof ReservaController) {
+						cantidadEliminada = new ReservaController().eliminar(id);
+					} else if (controller instanceof HuespedController) {
+						cantidadEliminada = new HuespedController().eliminar(id);
+					}
+					
+					modelo.removeRow(tabla.getSelectedRow());
+
+					JOptionPane.showMessageDialog(this, cantidadEliminada + " item eliminado con éxito!");
+				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
+	}
 	// Código que permite mover la ventana por la pantalla según la posición de "x"
 	// y "y"
 	private void headerMousePressed(java.awt.event.MouseEvent evt) {

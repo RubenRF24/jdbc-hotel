@@ -112,4 +112,23 @@ public class ReservaDAO {
 		}
 	}
 
+	public int eliminar(Integer id) {
+		try (con) {
+			var querySelect = "DELETE FROM TBL_RESERVA WHERE ID = ?";
+
+			final PreparedStatement statement = con.prepareStatement(querySelect);
+
+			try (statement) {
+				statement.setInt(1, id);
+
+				statement.execute();
+
+				return statement.getUpdateCount();
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

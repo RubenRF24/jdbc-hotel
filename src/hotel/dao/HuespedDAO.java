@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 
 import hotel.factory.ConnectionFactory;
 import hotel.modelo.Huesped;
-import hotel.modelo.Reserva;
 
 public class HuespedDAO {
 
@@ -120,6 +119,25 @@ public class HuespedDAO {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	public int eliminar(Integer id) {
+		try (con) {
+			var querySelect = "DELETE FROM TBL_HUESPEDES WHERE ID = ?";
+
+			final PreparedStatement statement = con.prepareStatement(querySelect);
+
+			try (statement) {
+				statement.setInt(1, id);
+
+				statement.execute();
+
+				return statement.getUpdateCount();
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
