@@ -1,5 +1,6 @@
 package hotel.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import hotel.dao.HuespedDAO;
@@ -14,6 +15,12 @@ public class HuespedController {
 
 	public List<Huesped> cargarHuespedes() {
 		return new HuespedDAO().listarHuespedes();
+	}
+
+	public int modificar(Integer id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad,
+			Double telefono, Integer numeroReserva) {
+		return new HuespedDAO().modificar(id, nombre, apellido, fechaNacimiento,
+								nacionalidad, telefono, numeroReserva);
 	}
 
 }
