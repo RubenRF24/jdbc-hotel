@@ -22,8 +22,8 @@ public class Huesped {
 		this.reservaId = reservaId;
 	}
 
-	public Huesped(int id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad, BigInteger telefono,
-			int reservaId) {
+	public Huesped(int id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad,
+			BigInteger telefono, int reservaId) {
 		this.id = id;
 		this.nombre = nombre;
 		this.apellido = apellido;

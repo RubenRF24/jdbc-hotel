@@ -140,4 +140,46 @@ public class HuespedDAO {
 		}
 	}
 
+	public List<Huesped> listarSegunTexto(String coincidencia) {
+		List<Huesped> resultado = new ArrayList<>();
+		var id = 0;
+		try{
+			id = Integer.valueOf(coincidencia);
+		}catch(NumberFormatException e) {
+		}
+		
+		try (con) {
+
+			var querySelect = "SELECT ID, NOMBRE, APELLIDO, FECHA_NAC, NACIONALIDAD, TELEFONO, ID_RESERVA"
+					+ " FROM TBL_HUESPEDES"
+					+ " WHERE APELLIDO LIKE ? OR ID_RESERVA = ?";
+
+			PreparedStatement statement = con.prepareStatement(querySelect);
+
+			try (statement) {
+				
+				statement.setString(1, coincidencia+"%");
+				statement.setInt(2, id);
+				
+				final ResultSet resultSet = statement.executeQuery();
+
+				try (resultSet) {
+					while (resultSet.next()) {
+						var huesped = new Huesped(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
+								resultSet.getString("APELLIDO"), resultSet.getDate("FECHA_NAC"),
+								resultSet.getString("NACIONALIDAD"), BigInteger.valueOf(resultSet.getLong("TELEFONO")),
+								resultSet.getInt("ID_RESERVA"));
+
+						resultado.add(huesped);
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+		return resultado;
+	}
+
 }

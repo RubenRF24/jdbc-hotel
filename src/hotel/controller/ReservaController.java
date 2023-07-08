@@ -18,11 +18,15 @@ public class ReservaController {
 	}
 
 	public int modificar(Integer id, Date fechaEntrada, Date fechaSalida, Double valor, Integer formaPago) {
-		return new ReservaDAO().modificar(id,fechaEntrada, fechaSalida, valor, formaPago);
+		return new ReservaDAO().modificar(id, fechaEntrada, fechaSalida, valor, formaPago);
 	}
 
 	public int eliminar(Integer id) {
 		return new ReservaDAO().eliminar(id);
+	}
+
+	public List<Reserva> buscar(String coincidencia) {
+		return new ReservaDAO().listarSegunTexto(coincidencia);
 	}
 
 }

@@ -20,12 +20,15 @@ public class HuespedController {
 
 	public int modificar(Integer id, String nombre, String apellido, Date fechaNacimiento, String nacionalidad,
 			BigInteger telefono, Integer numeroReserva) {
-		return new HuespedDAO().modificar(id, nombre, apellido, fechaNacimiento,
-								nacionalidad, telefono, numeroReserva);
+		return new HuespedDAO().modificar(id, nombre, apellido, fechaNacimiento, nacionalidad, telefono, numeroReserva);
 	}
 
 	public int eliminar(Integer id) {
 		return new HuespedDAO().eliminar(id);
+	}
+
+	public List<Huesped> buscar(String coincidencia) {
+		return new HuespedDAO().listarSegunTexto(coincidencia);
 	}
 
 }

@@ -131,4 +131,38 @@ public class ReservaDAO {
 		}
 	}
 
+	public List<Reserva> listarSegunTexto(String coincidencia) {
+		List<Reserva> resultado = new ArrayList<>();
+
+		try (con) {
+
+			var querySelect = "SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMAPAGO_ID " + "FROM TBL_RESERVA"
+			+" WHERE ID = ?";
+
+			PreparedStatement statement = con.prepareStatement(querySelect);
+
+			try (statement) {
+				statement.setInt(1, Integer.valueOf(coincidencia));
+				
+				final ResultSet resultSet = statement.executeQuery();
+
+				try (resultSet) {
+					while (resultSet.next()) {
+						var reserva = new Reserva(resultSet.getInt("ID"), resultSet.getDate("FECHA_ENTRADA"),
+								resultSet.getDate("FECHA_SALIDA"), resultSet.getDouble("VALOR"),
+								resultSet.getInt("FORMAPAGO_ID"));
+
+						resultado.add(reserva);
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+		return resultado;
+		
+	}
+
 }

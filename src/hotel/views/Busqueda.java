@@ -10,6 +10,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
@@ -30,6 +31,8 @@ import javax.swing.table.DefaultTableModel;
 
 import hotel.controller.HuespedController;
 import hotel.controller.ReservaController;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -80,6 +83,20 @@ public class Busqueda extends JFrame {
 		setUndecorated(true);
 
 		txtBuscar = new JTextField();
+		txtBuscar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtBuscar.getText().isBlank()) {
+					if (tbReservas.isShowing()) {
+						borrarFilas(modelo);
+						cargarReservas();
+					} else if (tbHuespedes.isShowing()) {
+						borrarFilas(modeloHuesped);
+						cargarHuespedes();
+					}
+				}
+			}
+		});
 		txtBuscar.setBounds(536, 127, 193, 31);
 		txtBuscar.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		contentPane.add(txtBuscar);
@@ -229,7 +246,11 @@ public class Busqueda extends JFrame {
 		btnbuscar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				if (tbHuespedes.isShowing()) {
+					buscar(modeloHuesped, huespedController);
+				} else if (tbReservas.isShowing()) {
+					buscar(modelo, reservaController);
+				}
 			}
 		});
 		btnbuscar.setLayout(null);
@@ -239,6 +260,7 @@ public class Busqueda extends JFrame {
 		contentPane.add(btnbuscar);
 
 		JLabel lblBuscar = new JLabel("BUSCAR");
+
 		lblBuscar.setBounds(0, 0, 122, 35);
 		btnbuscar.add(lblBuscar);
 		lblBuscar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -249,10 +271,10 @@ public class Busqueda extends JFrame {
 		btnEditar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (tbHuespedes.isShowing()) {
-					modificarHuesped();
-				} else if (tbReservas.isShowing()) {
+				if (tbReservas.isShowing()) {
 					modificarReserva();
+				} else if (tbHuespedes.isShowing()) {
+					modificarHuesped();
 				}
 			}
 		});
@@ -273,10 +295,10 @@ public class Busqueda extends JFrame {
 		btnEliminar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (tbHuespedes.isShowing()) {
-					eliminar(tbHuespedes, modeloHuesped, huespedController);
-				} else if (tbReservas.isShowing()) {
+				if (tbReservas.isShowing()) {
 					eliminar(tbReservas, modelo, reservaController);
+				} else if (tbHuespedes.isShowing()) {
+					eliminar(tbHuespedes, modeloHuesped, huespedController);
 				}
 			}
 		});
@@ -394,18 +416,47 @@ public class Busqueda extends JFrame {
 					Integer id = Integer.valueOf(modelo.getValueAt(tabla.getSelectedRow(), 0).toString());
 
 					int cantidadEliminada = 0;
-					
-					if(controller instanceof ReservaController) {
+
+					if (controller instanceof ReservaController) {
 						cantidadEliminada = new ReservaController().eliminar(id);
 					} else if (controller instanceof HuespedController) {
 						cantidadEliminada = new HuespedController().eliminar(id);
 					}
-					
+
 					modelo.removeRow(tabla.getSelectedRow());
 
 					JOptionPane.showMessageDialog(this, cantidadEliminada + " item eliminado con éxito!");
 				}, () -> JOptionPane.showMessageDialog(this, "Por favor, elije un item"));
 	}
+
+	private void buscar(DefaultTableModel modelo, Object controller) {
+
+		borrarFilas(modelo);
+
+		if (controller instanceof ReservaController) {
+			var coincidencia = txtBuscar.getText();
+			var contenido = new ReservaController().buscar(coincidencia);
+			contenido.forEach(datos -> modelo.addRow(new Object[] { datos.getId(), datos.getFechaEntrada(),
+					datos.getFechaSalida(), datos.getValor(), datos.getFormaPagoId() }));
+
+		} else if (controller instanceof HuespedController) {
+			var coincidencia = txtBuscar.getText();
+			var contenido = new HuespedController().buscar(coincidencia);
+			contenido.forEach(datos -> modelo.addRow(
+					new Object[] { datos.getId(), datos.getNombre(), datos.getApellido(), datos.getFechaNacimiento(),
+							datos.getNacionalidad(), datos.getTelefono(), datos.getReservaId() }));
+		}
+
+	}
+
+	private void borrarFilas(DefaultTableModel modelo) {
+		int cantidadFilas = modelo.getRowCount() - 1;
+
+		for (int i = cantidadFilas; i >= 0; i--) {
+			modelo.removeRow(i);
+		}
+	}
+
 	// Código que permite mover la ventana por la pantalla según la posición de "x"
 	// y "y"
 	private void headerMousePressed(java.awt.event.MouseEvent evt) {
